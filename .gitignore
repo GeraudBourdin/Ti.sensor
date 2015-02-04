@@ -1,0 +1,8 @@
+*.merge-left*
+*.merge-right*
+*.mine
+*.prej
+*.working
+.svn
+_svn
+svn-commit*.tmp

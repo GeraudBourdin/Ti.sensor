@@ -1,0 +1,16 @@
+%define lookup-function-name lookupGeneratedInit
+%define class-name SensorBindings
+%{
+
+#include <string.h>
+#include <v8.h>
+#include <KrollBindings.h>
+
+#include "com.geraudbourdin.sensor.SensorModule.h"
+
+
+%}
+struct titanium::bindings::BindEntry;
+%%
+com.geraudbourdin.sensor.SensorModule, ::com::geraudbourdin::sensor::SensorModule::bindProxy, ::com::geraudbourdin::sensor::SensorModule::dispose
+%%
