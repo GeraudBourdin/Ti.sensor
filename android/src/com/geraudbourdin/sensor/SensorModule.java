@@ -606,6 +606,8 @@ public class SensorModule extends KrollModule implements SensorEventListener
 	private float[] R = new float[16];
 	private float[] I = new float[16];
 	private float[] orientation = new float[3];
+	private float[] outR = new float[16];
+	private float[] orientationPitchRollAzimuth = new float[3];
 	// Used by TYPE_AMBIENT_TEMPERATURE
 	private float[] ambiantTemperatureValues = null;
 	// Used by TYPE_GAME_ROTATION_VECTOR
@@ -668,7 +670,6 @@ public class SensorModule extends KrollModule implements SensorEventListener
 			case Sensor.TYPE_ACCELEROMETER:
 				if (event.timestamp - lastSensorAccelerometerEventTimestamp > 100) {
 					accellerometerValues = event.values.clone();
-					// Gyroscope stuffs.
 						accellerometerValues = accelerationFilter.filterFloat(accellerometerValues); // Use a mean filter to smooth the sensor inputs
 						accelerationSampleCount++; // Count the number of samples received.
 	
@@ -724,14 +725,16 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				if(accellerometerValues!=null && magneticFieldValues!=null){
 					
 					boolean success = SensorManager.getRotationMatrix(R, I, accellerometerValues, magneticFieldValues);
+					SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_X, SensorManager.AXIS_Z, outR);
 					if (success) {
 						SensorManager.getOrientation(R, orientation);
 						float azimuthInDegress =  (float) (Math.toDegrees(orientation[0])+360) % 360;
 						data.put("compassRotation", azimuthInDegress);
 					}
-					data.put("azimuth", orientation[0]);
-					data.put("pitch", orientation[1]);
-					data.put("roll", orientation[2]);
+					SensorManager.getOrientation(outR, orientationPitchRollAzimuth);
+					data.put("azimuth", orientationPitchRollAzimuth[0]);
+					data.put("pitch", orientationPitchRollAzimuth[1]);
+					data.put("roll", orientationPitchRollAzimuth[2]);
 				}
 				break;
 			case Sensor.TYPE_AMBIENT_TEMPERATURE:
@@ -755,15 +758,13 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				data.put("y", gameRotationVectorValues[1]);
 				data.put("z", gameRotationVectorValues[2]);
 				data.put("cos", gameRotationVectorValues[3]);
-				data.put("headingAccuracy", gameRotationVectorValues[4]);
+				//data.put("headingAccuracy", gameRotationVectorValues[4]);
 				break;
 			case Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR:
 				geomagneticRotationVectorValues = event.values.clone();
 				data.put("x", geomagneticRotationVectorValues[0]);
 				data.put("y", geomagneticRotationVectorValues[1]);
 				data.put("z", geomagneticRotationVectorValues[2]);
-				data.put("cos", geomagneticRotationVectorValues[3]);
-				data.put("headingAccuracy", geomagneticRotationVectorValues[4]);
 				break;
 			case Sensor.TYPE_GRAVITY:
 				gravityValues = event.values.clone();
@@ -783,7 +784,6 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				}
 				// Initialization of the gyroscope based rotation matrix
 		        if (!stateInitializedCalibrated){
-					stateInitializedCalibrated = true;
 		            currentRotationMatrix = matrixMultiplication(currentRotationMatrix, initialRotationMatrix);
 		            stateInitializedCalibrated = true;
 		        }
@@ -817,13 +817,15 @@ public class SensorModule extends KrollModule implements SensorEventListener
 					deltaRotationVector[2] = sinThetaOverTwo * axisZ;
 					deltaRotationVector[3] = cosThetaOverTwo;
 					
-					// float[] deltaRotationMatrix = new float[9];
 					SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, deltaRotationVector);
 					// User code should concatenate the delta rotation we computed with the current rotation
 					// in order to get the updated rotation.
 					currentRotationMatrix = matrixMultiplication( currentRotationMatrix,  deltaRotationMatrix );
 					SensorManager.getOrientation( currentRotationMatrix, gyroscopeOrientation );
 				
+					data.put("x", gyroscopeValues[0]);
+					data.put("y", gyroscopeValues[1]);
+					data.put("z", gyroscopeValues[2]);
 					data.put("radianX", gyroscopeOrientation[0]);
 					data.put("radianY", gyroscopeOrientation[1]);
 					data.put("radianZ", gyroscopeOrientation[2]);
@@ -838,6 +840,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				break;
 			/*case Sensor.TYPE_HEART_RATE:
 				heartRateValues = event.values.clone();
+				data.put("rate", x);
 				break;*/
 			case Sensor.TYPE_LIGHT:
 				lightValues = event.values.clone();
@@ -856,6 +859,12 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				break;
 			case Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED:
 				magneticFieldUncalibratedValues = event.values.clone();
+				data.put("x_uncalib", magneticFieldUncalibratedValues[0]);
+				data.put("y_uncalib", magneticFieldUncalibratedValues[1]);
+				data.put("z_uncalib", magneticFieldUncalibratedValues[2]);
+				data.put("x_bias", magneticFieldUncalibratedValues[3]);
+				data.put("y_bias", magneticFieldUncalibratedValues[4]);
+				data.put("z_bias", magneticFieldUncalibratedValues[5]);
 				break;
 			case Sensor.TYPE_PROXIMITY:
 				proximityValues = event.values.clone();
@@ -867,9 +876,16 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				break;
 			case Sensor.TYPE_ROTATION_VECTOR:
 				rotationVectorValues = event.values.clone();
+				data.put("x", rotationVectorValues[0]);
+				data.put("y", rotationVectorValues[1]);
+				data.put("z", rotationVectorValues[2]);
+				data.put("cos", rotationVectorValues[3]);
+				data.put("headingAccuracy", rotationVectorValues[4]);
 				break;
 			case Sensor.TYPE_SIGNIFICANT_MOTION:
 				significantMotionValues = event.values.clone();
+				Log.i(LCAT, "TYPE_SIGNIFICANT_MOTION:"+significantMotionValues[0]);
+				data.put("motion", significantMotionValues[0]);
 				break;
 			case Sensor.TYPE_STEP_COUNTER:
 				stepCounterValues = event.values.clone();
@@ -882,6 +898,8 @@ public class SensorModule extends KrollModule implements SensorEventListener
 			case Sensor.TYPE_ORIENTATION:
 				orientationValues = event.values.clone();
 				data.put("orientation", orientationValues[0]);
+				data.put("pitch", orientationValues[0]);
+				data.put("roll", orientationValues[0]);
 				break;
 			case Sensor.TYPE_STEP_DETECTOR:
 				stepDetectorValues = event.values.clone();

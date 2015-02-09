@@ -142,11 +142,11 @@ Handle<FunctionTemplate> SensorModule::getProxyTemplate()
 
 		DEFINE_INT_CONSTANT(prototypeTemplate, "TYPE_ACCELEROMETER", 1);
 
-		DEFINE_INT_CONSTANT(prototypeTemplate, "TYPE_GRAVITY", 9);
+		DEFINE_INT_CONSTANT(prototypeTemplate, "TYPE_SIGNIFICANT_MOTION", 17);
 
 		DEFINE_INT_CONSTANT(prototypeTemplate, "TYPE_GAME_ROTATION_VECTOR", 15);
 
-		DEFINE_INT_CONSTANT(prototypeTemplate, "TYPE_SIGNIFICANT_MOTION", 17);
+		DEFINE_INT_CONSTANT(prototypeTemplate, "TYPE_GRAVITY", 9);
 
 		DEFINE_INT_CONSTANT(prototypeTemplate, "TYPE_GEOMAGNETIC_ROTATION_VECTOR", 20);
 
