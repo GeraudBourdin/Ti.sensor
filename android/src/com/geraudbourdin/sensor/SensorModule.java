@@ -17,6 +17,7 @@ import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiContext;
 import org.appcelerator.titanium.util.TiSensorHelper;
+import org.appcelerator.titanium.util.TiUIHelper;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.kroll.common.Log;
 
@@ -25,6 +26,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+// Brightness.
+import android.content.ContentResolver;
+import android.provider.Settings;
+import android.provider.Settings.SettingNotFoundException;
+import android.view.WindowManager;
+import android.view.Window;
 
 import java.util.List;
 
@@ -79,6 +86,10 @@ public class SensorModule extends KrollModule implements SensorEventListener
 	public static final int TYPE_STEP_DETECTOR = Sensor.TYPE_STEP_DETECTOR;
 	@Kroll.constant
 	public static final int TYPE_ORIENTATION = Sensor.TYPE_ORIENTATION;
+	@Kroll.constant
+	public static final int SCREEN_BRIGHTNESS_MODE_MANUAL = Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
+	@Kroll.constant
+	public static final int SCREEN_BRIGHTNESS_MODE_AUTOMATIC = Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
 
 	
 	private boolean accelerometerRegistered = false;
@@ -240,6 +251,40 @@ public class SensorModule extends KrollModule implements SensorEventListener
 		
 	}	
 	
+	
+	@Kroll.method
+	protected int getBrightnessMode() {
+		try {
+			ContentResolver contentResolver = getActivity().getContentResolver();
+			int mode = Settings.System.getInt( contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE);
+			return mode;
+		} catch (SettingNotFoundException e) {
+			return -1;
+		}
+	}
+	
+	@Kroll.setProperty @Kroll.method
+	protected void setBrightnessMode(int type) {
+		ContentResolver contentResolver = getActivity().getContentResolver();
+		Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, type);
+	}
+	
+	@Kroll.method
+	protected int getScreenBrightness() {
+		try {
+			ContentResolver contentResolver = getActivity().getContentResolver();
+			int mode = Settings.System.getInt( contentResolver, android.provider.Settings.System.SCREEN_BRIGHTNESS);
+			return mode;
+		} catch (SettingNotFoundException e) {
+			return -1;
+		}
+	}
+	
+	@Kroll.setProperty @Kroll.method
+	protected void setScreenBrightness(int val) {
+			ContentResolver contentResolver = getActivity().getContentResolver();
+			Settings.System.putInt( contentResolver, android.provider.Settings.System.SCREEN_BRIGHTNESS, val);
+	}
 	
 	@Kroll.setProperty @Kroll.method
 	protected int[] getSensorList(int type) {

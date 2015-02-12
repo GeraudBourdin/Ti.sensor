@@ -1,6 +1,6 @@
-# ti_sensor
+# ti_sensor_demo_app 
 
-Titanium sensor module. (Android only).
+Demo project for the all in one Titanium sensor module. (Android only).
 
 
 ## List of avaliable sensors : 
@@ -128,6 +128,9 @@ Ti.Android.currentActivity.addEventListener('resume', function(e) {
 	sensor.TYPE_STEP_COUNTER
 	sensor.TYPE_STEP_DETECTOR
 	//sensorsId[sensor.TYPE_HEART_RATE (have to compile module with api 21 to use it).
+	
+	sensor.SCREEN_BRIGHTNESS_MODE_MANUAL
+	sensor.SCREEN_BRIGHTNESS_MODE_AUTOMATIC
 ```
 
 ## functions : 
@@ -152,7 +155,28 @@ Ti.Android.currentActivity.addEventListener('resume', function(e) {
 		$.maximumRange.text = infos['maximumRange'];
 		$.minDelay.text = infos['minDelay'];
 ```		
-		
+
+###get the current brightness mode :
+```javascript 
+	sensor.getBrightnessMode();
+	// return sensor.SCREEN_BRIGHTNESS_MODE_MANUAL or sensor.SCREEN_BRIGHTNESS_MODE_AUTOMATIC
+```	
+
+###set the current brightness mode :
+```javascript 
+	// accept sensor.SCREEN_BRIGHTNESS_MODE_MANUAL or sensor.SCREEN_BRIGHTNESS_MODE_AUTOMATIC
+	sensor.setBrightnessMode(sensor.SCREEN_BRIGHTNESS_MODE_MANUAL);
+```	
+
+###get the current screen brightness value (between 0 AND 255) :
+```javascript 
+	sensor.getScreenBrightness();
+```	
+
+###set the screen brightness value (between 0 AND 255) :
+```javascript 
+	sensor.setScreenBrightness(255);
+```	
 		
 ### Return values for differents types : 
 	
@@ -317,8 +341,3 @@ Ti.Android.currentActivity.addEventListener('resume', function(e) {
 		e.orientation : Azimuth, angle between the magnetic north direction and the y-axis, around the z-axis (0 to 359). 0=North, 90=East, 180=South, 270=West.
 		e.pitch : Pitch, rotation around x-axis (-180 to 180), with positive values when the z-axis moves toward the y-axis.
 		e.roll : Roll, rotation around the x-axis (-90 to 90) increasing as the device moves clockwise.
-
-
-
-
-
