@@ -94,12 +94,17 @@ Handle<FunctionTemplate> SensorModule::getProxyTemplate()
 	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "enableSensor", SensorModule::enableSensor);
 	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "listSensor", SensorModule::listSensor);
 	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "getListSensor", SensorModule::getListSensor);
-	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "setScreenBrightness", SensorModule::setScreenBrightness);
 	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "getSensorInfos", SensorModule::getSensorInfos);
-	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "getSensorInfost", SensorModule::getSensorInfost);
 	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "getBrightnessMode", SensorModule::getBrightnessMode);
-	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "setBrightnessMode", SensorModule::setBrightnessMode);
+	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "getSensorInfost", SensorModule::getSensorInfost);
 	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "setSensor", SensorModule::setSensor);
+	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "setBrightnessMode", SensorModule::setBrightnessMode);
+	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "flashLightOff", SensorModule::flashLightOff);
+	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "hasFlashLight", SensorModule::hasFlashLight);
+	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "setflashLightOff", SensorModule::setflashLightOff);
+	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "setScreenBrightness", SensorModule::setScreenBrightness);
+	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "flashLightOn", SensorModule::flashLightOn);
+	DEFINE_PROTOTYPE_METHOD(proxyTemplate, "setflashLightOn", SensorModule::setflashLightOn);
 
 	Local<ObjectTemplate> prototypeTemplate = proxyTemplate->PrototypeTemplate();
 	Local<ObjectTemplate> instanceTemplate = proxyTemplate->InstanceTemplate();
@@ -150,11 +155,11 @@ Handle<FunctionTemplate> SensorModule::getProxyTemplate()
 
 		DEFINE_INT_CONSTANT(prototypeTemplate, "SCREEN_BRIGHTNESS_MODE_AUTOMATIC", 1);
 
-		DEFINE_INT_CONSTANT(prototypeTemplate, "TYPE_SIGNIFICANT_MOTION", 17);
+		DEFINE_INT_CONSTANT(prototypeTemplate, "TYPE_GRAVITY", 9);
 
 		DEFINE_INT_CONSTANT(prototypeTemplate, "TYPE_GAME_ROTATION_VECTOR", 15);
 
-		DEFINE_INT_CONSTANT(prototypeTemplate, "TYPE_GRAVITY", 9);
+		DEFINE_INT_CONSTANT(prototypeTemplate, "TYPE_SIGNIFICANT_MOTION", 17);
 
 		DEFINE_INT_CONSTANT(prototypeTemplate, "TYPE_GEOMAGNETIC_ROTATION_VECTOR", 20);
 
@@ -172,21 +177,21 @@ Handle<FunctionTemplate> SensorModule::getProxyTemplate()
 			titanium::Proxy::getProperty
 			, SensorModule::setter_sensorList
 , Handle<Value>(), DEFAULT);
-	instanceTemplate->SetAccessor(String::NewSymbol("screenBrightness"),
-			titanium::Proxy::getProperty
-			, SensorModule::setter_screenBrightness
-, Handle<Value>(), DEFAULT);
 	instanceTemplate->SetAccessor(String::NewSymbol("enableSensor"),
 			titanium::Proxy::getProperty
 			, SensorModule::setter_enableSensor
 , Handle<Value>(), DEFAULT);
-	instanceTemplate->SetAccessor(String::NewSymbol("brightnessMode"),
+	instanceTemplate->SetAccessor(String::NewSymbol("screenBrightness"),
 			titanium::Proxy::getProperty
-			, SensorModule::setter_brightnessMode
+			, SensorModule::setter_screenBrightness
 , Handle<Value>(), DEFAULT);
 	instanceTemplate->SetAccessor(String::NewSymbol("sensorInfos"),
 			titanium::Proxy::getProperty
 			, SensorModule::setter_sensorInfos
+, Handle<Value>(), DEFAULT);
+	instanceTemplate->SetAccessor(String::NewSymbol("brightnessMode"),
+			titanium::Proxy::getProperty
+			, SensorModule::setter_brightnessMode
 , Handle<Value>(), DEFAULT);
 	instanceTemplate->SetAccessor(String::NewSymbol("sensorInfost"),
 			titanium::Proxy::getProperty
@@ -492,73 +497,6 @@ Handle<Value> SensorModule::getListSensor(const Arguments& args)
 	return v8Result;
 
 }
-Handle<Value> SensorModule::setScreenBrightness(const Arguments& args)
-{
-	LOGD(TAG, "setScreenBrightness()");
-	HandleScope scope;
-
-	JNIEnv *env = titanium::JNIScope::getEnv();
-	if (!env) {
-		return titanium::JSException::GetJNIEnvironmentError();
-	}
-	static jmethodID methodID = NULL;
-	if (!methodID) {
-		methodID = env->GetMethodID(SensorModule::javaClass, "setScreenBrightness", "(I)V");
-		if (!methodID) {
-			const char *error = "Couldn't find proxy method 'setScreenBrightness' with signature '(I)V'";
-			LOGE(TAG, error);
-				return titanium::JSException::Error(error);
-		}
-	}
-
-	titanium::Proxy* proxy = titanium::Proxy::unwrap(args.Holder());
-
-	if (args.Length() < 1) {
-		char errorStringBuffer[100];
-		sprintf(errorStringBuffer, "setScreenBrightness: Invalid number of arguments. Expected 1 but got %d", args.Length());
-		return ThrowException(Exception::Error(String::New(errorStringBuffer)));
-	}
-
-	jvalue jArguments[1];
-
-
-
-
-	
-	
-		if ((titanium::V8Util::isNaN(args[0]) && !args[0]->IsUndefined()) || args[0]->ToString()->Length() == 0) {
-			const char *error = "Invalid value, expected type Number.";
-			LOGE(TAG, error);
-			return titanium::JSException::Error(error);
-		}
-	if (!args[0]->IsNull()) {
-		Local<Number> arg_0 = args[0]->ToNumber();
-		jArguments[0].i =
-			titanium::TypeConverter::jsNumberToJavaInt(env, arg_0);
-	} else {
-		jArguments[0].i = NULL;
-	}
-
-	jobject javaProxy = proxy->getJavaObject();
-	env->CallVoidMethodA(javaProxy, methodID, jArguments);
-
-	if (!JavaObject::useGlobalRefs) {
-		env->DeleteLocalRef(javaProxy);
-	}
-
-
-
-	if (env->ExceptionCheck()) {
-		titanium::JSException::fromJavaException();
-		env->ExceptionClear();
-	}
-
-
-
-
-	return v8::Undefined();
-
-}
 Handle<Value> SensorModule::getSensorInfos(const Arguments& args)
 {
 	LOGD(TAG, "getSensorInfos()");
@@ -583,82 +521,6 @@ Handle<Value> SensorModule::getSensorInfos(const Arguments& args)
 	if (args.Length() < 1) {
 		char errorStringBuffer[100];
 		sprintf(errorStringBuffer, "getSensorInfos: Invalid number of arguments. Expected 1 but got %d", args.Length());
-		return ThrowException(Exception::Error(String::New(errorStringBuffer)));
-	}
-
-	jvalue jArguments[1];
-
-
-
-
-	
-	
-		if ((titanium::V8Util::isNaN(args[0]) && !args[0]->IsUndefined()) || args[0]->ToString()->Length() == 0) {
-			const char *error = "Invalid value, expected type Number.";
-			LOGE(TAG, error);
-			return titanium::JSException::Error(error);
-		}
-	if (!args[0]->IsNull()) {
-		Local<Number> arg_0 = args[0]->ToNumber();
-		jArguments[0].i =
-			titanium::TypeConverter::jsNumberToJavaInt(env, arg_0);
-	} else {
-		jArguments[0].i = NULL;
-	}
-
-	jobject javaProxy = proxy->getJavaObject();
-	jobject jResult = (jobject)env->CallObjectMethodA(javaProxy, methodID, jArguments);
-
-
-
-	if (!JavaObject::useGlobalRefs) {
-		env->DeleteLocalRef(javaProxy);
-	}
-
-
-
-	if (env->ExceptionCheck()) {
-		Handle<Value> jsException = titanium::JSException::fromJavaException();
-		env->ExceptionClear();
-		return jsException;
-	}
-
-	if (jResult == NULL) {
-		return Null();
-	}
-
-	Handle<Value> v8Result = titanium::TypeConverter::javaObjectToJsValue(env, jResult);
-
-	env->DeleteLocalRef(jResult);
-
-
-	return v8Result;
-
-}
-Handle<Value> SensorModule::getSensorInfost(const Arguments& args)
-{
-	LOGD(TAG, "getSensorInfost()");
-	HandleScope scope;
-
-	JNIEnv *env = titanium::JNIScope::getEnv();
-	if (!env) {
-		return titanium::JSException::GetJNIEnvironmentError();
-	}
-	static jmethodID methodID = NULL;
-	if (!methodID) {
-		methodID = env->GetMethodID(SensorModule::javaClass, "getSensorInfost", "(I)Lorg/appcelerator/kroll/KrollDict;");
-		if (!methodID) {
-			const char *error = "Couldn't find proxy method 'getSensorInfost' with signature '(I)Lorg/appcelerator/kroll/KrollDict;'";
-			LOGE(TAG, error);
-				return titanium::JSException::Error(error);
-		}
-	}
-
-	titanium::Proxy* proxy = titanium::Proxy::unwrap(args.Holder());
-
-	if (args.Length() < 1) {
-		char errorStringBuffer[100];
-		sprintf(errorStringBuffer, "getSensorInfost: Invalid number of arguments. Expected 1 but got %d", args.Length());
 		return ThrowException(Exception::Error(String::New(errorStringBuffer)));
 	}
 
@@ -759,6 +621,149 @@ Handle<Value> SensorModule::getBrightnessMode(const Arguments& args)
 	return v8Result;
 
 }
+Handle<Value> SensorModule::getSensorInfost(const Arguments& args)
+{
+	LOGD(TAG, "getSensorInfost()");
+	HandleScope scope;
+
+	JNIEnv *env = titanium::JNIScope::getEnv();
+	if (!env) {
+		return titanium::JSException::GetJNIEnvironmentError();
+	}
+	static jmethodID methodID = NULL;
+	if (!methodID) {
+		methodID = env->GetMethodID(SensorModule::javaClass, "getSensorInfost", "(I)Lorg/appcelerator/kroll/KrollDict;");
+		if (!methodID) {
+			const char *error = "Couldn't find proxy method 'getSensorInfost' with signature '(I)Lorg/appcelerator/kroll/KrollDict;'";
+			LOGE(TAG, error);
+				return titanium::JSException::Error(error);
+		}
+	}
+
+	titanium::Proxy* proxy = titanium::Proxy::unwrap(args.Holder());
+
+	if (args.Length() < 1) {
+		char errorStringBuffer[100];
+		sprintf(errorStringBuffer, "getSensorInfost: Invalid number of arguments. Expected 1 but got %d", args.Length());
+		return ThrowException(Exception::Error(String::New(errorStringBuffer)));
+	}
+
+	jvalue jArguments[1];
+
+
+
+
+	
+	
+		if ((titanium::V8Util::isNaN(args[0]) && !args[0]->IsUndefined()) || args[0]->ToString()->Length() == 0) {
+			const char *error = "Invalid value, expected type Number.";
+			LOGE(TAG, error);
+			return titanium::JSException::Error(error);
+		}
+	if (!args[0]->IsNull()) {
+		Local<Number> arg_0 = args[0]->ToNumber();
+		jArguments[0].i =
+			titanium::TypeConverter::jsNumberToJavaInt(env, arg_0);
+	} else {
+		jArguments[0].i = NULL;
+	}
+
+	jobject javaProxy = proxy->getJavaObject();
+	jobject jResult = (jobject)env->CallObjectMethodA(javaProxy, methodID, jArguments);
+
+
+
+	if (!JavaObject::useGlobalRefs) {
+		env->DeleteLocalRef(javaProxy);
+	}
+
+
+
+	if (env->ExceptionCheck()) {
+		Handle<Value> jsException = titanium::JSException::fromJavaException();
+		env->ExceptionClear();
+		return jsException;
+	}
+
+	if (jResult == NULL) {
+		return Null();
+	}
+
+	Handle<Value> v8Result = titanium::TypeConverter::javaObjectToJsValue(env, jResult);
+
+	env->DeleteLocalRef(jResult);
+
+
+	return v8Result;
+
+}
+Handle<Value> SensorModule::setSensor(const Arguments& args)
+{
+	LOGD(TAG, "setSensor()");
+	HandleScope scope;
+
+	JNIEnv *env = titanium::JNIScope::getEnv();
+	if (!env) {
+		return titanium::JSException::GetJNIEnvironmentError();
+	}
+	static jmethodID methodID = NULL;
+	if (!methodID) {
+		methodID = env->GetMethodID(SensorModule::javaClass, "setSensor", "(I)V");
+		if (!methodID) {
+			const char *error = "Couldn't find proxy method 'setSensor' with signature '(I)V'";
+			LOGE(TAG, error);
+				return titanium::JSException::Error(error);
+		}
+	}
+
+	titanium::Proxy* proxy = titanium::Proxy::unwrap(args.Holder());
+
+	if (args.Length() < 1) {
+		char errorStringBuffer[100];
+		sprintf(errorStringBuffer, "setSensor: Invalid number of arguments. Expected 1 but got %d", args.Length());
+		return ThrowException(Exception::Error(String::New(errorStringBuffer)));
+	}
+
+	jvalue jArguments[1];
+
+
+
+
+	
+	
+		if ((titanium::V8Util::isNaN(args[0]) && !args[0]->IsUndefined()) || args[0]->ToString()->Length() == 0) {
+			const char *error = "Invalid value, expected type Number.";
+			LOGE(TAG, error);
+			return titanium::JSException::Error(error);
+		}
+	if (!args[0]->IsNull()) {
+		Local<Number> arg_0 = args[0]->ToNumber();
+		jArguments[0].i =
+			titanium::TypeConverter::jsNumberToJavaInt(env, arg_0);
+	} else {
+		jArguments[0].i = NULL;
+	}
+
+	jobject javaProxy = proxy->getJavaObject();
+	env->CallVoidMethodA(javaProxy, methodID, jArguments);
+
+	if (!JavaObject::useGlobalRefs) {
+		env->DeleteLocalRef(javaProxy);
+	}
+
+
+
+	if (env->ExceptionCheck()) {
+		titanium::JSException::fromJavaException();
+		env->ExceptionClear();
+	}
+
+
+
+
+	return v8::Undefined();
+
+}
 Handle<Value> SensorModule::setBrightnessMode(const Arguments& args)
 {
 	LOGD(TAG, "setBrightnessMode()");
@@ -826,9 +831,9 @@ Handle<Value> SensorModule::setBrightnessMode(const Arguments& args)
 	return v8::Undefined();
 
 }
-Handle<Value> SensorModule::setSensor(const Arguments& args)
+Handle<Value> SensorModule::flashLightOff(const Arguments& args)
 {
-	LOGD(TAG, "setSensor()");
+	LOGD(TAG, "flashLightOff()");
 	HandleScope scope;
 
 	JNIEnv *env = titanium::JNIScope::getEnv();
@@ -837,9 +842,143 @@ Handle<Value> SensorModule::setSensor(const Arguments& args)
 	}
 	static jmethodID methodID = NULL;
 	if (!methodID) {
-		methodID = env->GetMethodID(SensorModule::javaClass, "setSensor", "(I)V");
+		methodID = env->GetMethodID(SensorModule::javaClass, "flashLightOff", "()V");
 		if (!methodID) {
-			const char *error = "Couldn't find proxy method 'setSensor' with signature '(I)V'";
+			const char *error = "Couldn't find proxy method 'flashLightOff' with signature '()V'";
+			LOGE(TAG, error);
+				return titanium::JSException::Error(error);
+		}
+	}
+
+	titanium::Proxy* proxy = titanium::Proxy::unwrap(args.Holder());
+
+	jvalue* jArguments = 0;
+
+	jobject javaProxy = proxy->getJavaObject();
+	env->CallVoidMethodA(javaProxy, methodID, jArguments);
+
+	if (!JavaObject::useGlobalRefs) {
+		env->DeleteLocalRef(javaProxy);
+	}
+
+
+
+	if (env->ExceptionCheck()) {
+		titanium::JSException::fromJavaException();
+		env->ExceptionClear();
+	}
+
+
+
+
+	return v8::Undefined();
+
+}
+Handle<Value> SensorModule::hasFlashLight(const Arguments& args)
+{
+	LOGD(TAG, "hasFlashLight()");
+	HandleScope scope;
+
+	JNIEnv *env = titanium::JNIScope::getEnv();
+	if (!env) {
+		return titanium::JSException::GetJNIEnvironmentError();
+	}
+	static jmethodID methodID = NULL;
+	if (!methodID) {
+		methodID = env->GetMethodID(SensorModule::javaClass, "hasFlashLight", "()Z");
+		if (!methodID) {
+			const char *error = "Couldn't find proxy method 'hasFlashLight' with signature '()Z'";
+			LOGE(TAG, error);
+				return titanium::JSException::Error(error);
+		}
+	}
+
+	titanium::Proxy* proxy = titanium::Proxy::unwrap(args.Holder());
+
+	jvalue* jArguments = 0;
+
+	jobject javaProxy = proxy->getJavaObject();
+	jboolean jResult = (jboolean)env->CallBooleanMethodA(javaProxy, methodID, jArguments);
+
+
+
+	if (!JavaObject::useGlobalRefs) {
+		env->DeleteLocalRef(javaProxy);
+	}
+
+
+
+	if (env->ExceptionCheck()) {
+		Handle<Value> jsException = titanium::JSException::fromJavaException();
+		env->ExceptionClear();
+		return jsException;
+	}
+
+
+	Handle<Boolean> v8Result = titanium::TypeConverter::javaBooleanToJsBoolean(env, jResult);
+
+
+
+	return v8Result;
+
+}
+Handle<Value> SensorModule::setflashLightOff(const Arguments& args)
+{
+	LOGD(TAG, "setflashLightOff()");
+	HandleScope scope;
+
+	JNIEnv *env = titanium::JNIScope::getEnv();
+	if (!env) {
+		return titanium::JSException::GetJNIEnvironmentError();
+	}
+	static jmethodID methodID = NULL;
+	if (!methodID) {
+		methodID = env->GetMethodID(SensorModule::javaClass, "setflashLightOff", "()V");
+		if (!methodID) {
+			const char *error = "Couldn't find proxy method 'setflashLightOff' with signature '()V'";
+			LOGE(TAG, error);
+				return titanium::JSException::Error(error);
+		}
+	}
+
+	titanium::Proxy* proxy = titanium::Proxy::unwrap(args.Holder());
+
+	jvalue* jArguments = 0;
+
+	jobject javaProxy = proxy->getJavaObject();
+	env->CallVoidMethodA(javaProxy, methodID, jArguments);
+
+	if (!JavaObject::useGlobalRefs) {
+		env->DeleteLocalRef(javaProxy);
+	}
+
+
+
+	if (env->ExceptionCheck()) {
+		titanium::JSException::fromJavaException();
+		env->ExceptionClear();
+	}
+
+
+
+
+	return v8::Undefined();
+
+}
+Handle<Value> SensorModule::setScreenBrightness(const Arguments& args)
+{
+	LOGD(TAG, "setScreenBrightness()");
+	HandleScope scope;
+
+	JNIEnv *env = titanium::JNIScope::getEnv();
+	if (!env) {
+		return titanium::JSException::GetJNIEnvironmentError();
+	}
+	static jmethodID methodID = NULL;
+	if (!methodID) {
+		methodID = env->GetMethodID(SensorModule::javaClass, "setScreenBrightness", "(I)V");
+		if (!methodID) {
+			const char *error = "Couldn't find proxy method 'setScreenBrightness' with signature '(I)V'";
 			LOGE(TAG, error);
 				return titanium::JSException::Error(error);
 		}
@@ -849,7 +988,7 @@ Handle<Value> SensorModule::setSensor(const Arguments& args)
 
 	if (args.Length() < 1) {
 		char errorStringBuffer[100];
-		sprintf(errorStringBuffer, "setSensor: Invalid number of arguments. Expected 1 but got %d", args.Length());
+		sprintf(errorStringBuffer, "setScreenBrightness: Invalid number of arguments. Expected 1 but got %d", args.Length());
 		return ThrowException(Exception::Error(String::New(errorStringBuffer)));
 	}
 
@@ -872,6 +1011,92 @@ Handle<Value> SensorModule::setSensor(const Arguments& args)
 	} else {
 		jArguments[0].i = NULL;
 	}
+
+	jobject javaProxy = proxy->getJavaObject();
+	env->CallVoidMethodA(javaProxy, methodID, jArguments);
+
+	if (!JavaObject::useGlobalRefs) {
+		env->DeleteLocalRef(javaProxy);
+	}
+
+
+
+	if (env->ExceptionCheck()) {
+		titanium::JSException::fromJavaException();
+		env->ExceptionClear();
+	}
+
+
+
+
+	return v8::Undefined();
+
+}
+Handle<Value> SensorModule::flashLightOn(const Arguments& args)
+{
+	LOGD(TAG, "flashLightOn()");
+	HandleScope scope;
+
+	JNIEnv *env = titanium::JNIScope::getEnv();
+	if (!env) {
+		return titanium::JSException::GetJNIEnvironmentError();
+	}
+	static jmethodID methodID = NULL;
+	if (!methodID) {
+		methodID = env->GetMethodID(SensorModule::javaClass, "flashLightOn", "()V");
+		if (!methodID) {
+			const char *error = "Couldn't find proxy method 'flashLightOn' with signature '()V'";
+			LOGE(TAG, error);
+				return titanium::JSException::Error(error);
+		}
+	}
+
+	titanium::Proxy* proxy = titanium::Proxy::unwrap(args.Holder());
+
+	jvalue* jArguments = 0;
+
+	jobject javaProxy = proxy->getJavaObject();
+	env->CallVoidMethodA(javaProxy, methodID, jArguments);
+
+	if (!JavaObject::useGlobalRefs) {
+		env->DeleteLocalRef(javaProxy);
+	}
+
+
+
+	if (env->ExceptionCheck()) {
+		titanium::JSException::fromJavaException();
+		env->ExceptionClear();
+	}
+
+
+
+
+	return v8::Undefined();
+
+}
+Handle<Value> SensorModule::setflashLightOn(const Arguments& args)
+{
+	LOGD(TAG, "setflashLightOn()");
+	HandleScope scope;
+
+	JNIEnv *env = titanium::JNIScope::getEnv();
+	if (!env) {
+		return titanium::JSException::GetJNIEnvironmentError();
+	}
+	static jmethodID methodID = NULL;
+	if (!methodID) {
+		methodID = env->GetMethodID(SensorModule::javaClass, "setflashLightOn", "()V");
+		if (!methodID) {
+			const char *error = "Couldn't find proxy method 'setflashLightOn' with signature '()V'";
+			LOGE(TAG, error);
+				return titanium::JSException::Error(error);
+		}
+	}
+
+	titanium::Proxy* proxy = titanium::Proxy::unwrap(args.Holder());
+
+	jvalue* jArguments = 0;
 
 	jobject javaProxy = proxy->getJavaObject();
 	env->CallVoidMethodA(javaProxy, methodID, jArguments);
@@ -1023,69 +1248,6 @@ void SensorModule::setter_sensorList(Local<String> property, Local<Value> value,
 
 
 
-void SensorModule::setter_screenBrightness(Local<String> property, Local<Value> value, const AccessorInfo& info)
-{
-	LOGD(TAG, "set screenBrightness");
-	HandleScope scope;
-
-	JNIEnv *env = titanium::JNIScope::getEnv();
-	if (!env) {
-		LOGE(TAG, "Failed to get environment, screenBrightness wasn't set");
-		return;
-	}
-
-	static jmethodID methodID = NULL;
-	if (!methodID) {
-		methodID = env->GetMethodID(SensorModule::javaClass, "setScreenBrightness", "(I)V");
-		if (!methodID) {
-			const char *error = "Couldn't find proxy method 'setScreenBrightness' with signature '(I)V'";
-			LOGE(TAG, error);
-		}
-	}
-
-	titanium::Proxy* proxy = titanium::Proxy::unwrap(info.Holder());
-	if (!proxy) {
-		return;
-	}
-
-	jvalue jArguments[1];
-
-	
-	
-		if ((titanium::V8Util::isNaN(value) && !value->IsUndefined()) || value->ToString()->Length() == 0) {
-			const char *error = "Invalid value, expected type Number.";
-			LOGE(TAG, error);
-		}
-	if (!value->IsNull()) {
-		Local<Number> arg_0 = value->ToNumber();
-		jArguments[0].i =
-			titanium::TypeConverter::jsNumberToJavaInt(env, arg_0);
-	} else {
-		jArguments[0].i = NULL;
-	}
-
-	jobject javaProxy = proxy->getJavaObject();
-	env->CallVoidMethodA(javaProxy, methodID, jArguments);
-
-	if (!JavaObject::useGlobalRefs) {
-		env->DeleteLocalRef(javaProxy);
-	}
-
-
-
-	if (env->ExceptionCheck()) {
-		titanium::JSException::fromJavaException();
-		env->ExceptionClear();
-	}
-
-
-
-
-	Proxy::setProperty(property, value, info);
-}
-
-
-
 void SensorModule::setter_enableSensor(Local<String> property, Local<Value> value, const AccessorInfo& info)
 {
 	LOGD(TAG, "set enableSensor");
@@ -1148,22 +1310,22 @@ void SensorModule::setter_enableSensor(Local<String> property, Local<Value> valu
 
 
 
-void SensorModule::setter_brightnessMode(Local<String> property, Local<Value> value, const AccessorInfo& info)
+void SensorModule::setter_screenBrightness(Local<String> property, Local<Value> value, const AccessorInfo& info)
 {
-	LOGD(TAG, "set brightnessMode");
+	LOGD(TAG, "set screenBrightness");
 	HandleScope scope;
 
 	JNIEnv *env = titanium::JNIScope::getEnv();
 	if (!env) {
-		LOGE(TAG, "Failed to get environment, brightnessMode wasn't set");
+		LOGE(TAG, "Failed to get environment, screenBrightness wasn't set");
 		return;
 	}
 
 	static jmethodID methodID = NULL;
 	if (!methodID) {
-		methodID = env->GetMethodID(SensorModule::javaClass, "setBrightnessMode", "(I)V");
+		methodID = env->GetMethodID(SensorModule::javaClass, "setScreenBrightness", "(I)V");
 		if (!methodID) {
-			const char *error = "Couldn't find proxy method 'setBrightnessMode' with signature '(I)V'";
+			const char *error = "Couldn't find proxy method 'setScreenBrightness' with signature '(I)V'";
 			LOGE(TAG, error);
 		}
 	}
@@ -1254,6 +1416,69 @@ void SensorModule::setter_sensorInfos(Local<String> property, Local<Value> value
 
 	jobject javaProxy = proxy->getJavaObject();
 	env->CallObjectMethodA(javaProxy, methodID, jArguments);
+
+	if (!JavaObject::useGlobalRefs) {
+		env->DeleteLocalRef(javaProxy);
+	}
+
+
+
+	if (env->ExceptionCheck()) {
+		titanium::JSException::fromJavaException();
+		env->ExceptionClear();
+	}
+
+
+
+
+	Proxy::setProperty(property, value, info);
+}
+
+
+
+void SensorModule::setter_brightnessMode(Local<String> property, Local<Value> value, const AccessorInfo& info)
+{
+	LOGD(TAG, "set brightnessMode");
+	HandleScope scope;
+
+	JNIEnv *env = titanium::JNIScope::getEnv();
+	if (!env) {
+		LOGE(TAG, "Failed to get environment, brightnessMode wasn't set");
+		return;
+	}
+
+	static jmethodID methodID = NULL;
+	if (!methodID) {
+		methodID = env->GetMethodID(SensorModule::javaClass, "setBrightnessMode", "(I)V");
+		if (!methodID) {
+			const char *error = "Couldn't find proxy method 'setBrightnessMode' with signature '(I)V'";
+			LOGE(TAG, error);
+		}
+	}
+
+	titanium::Proxy* proxy = titanium::Proxy::unwrap(info.Holder());
+	if (!proxy) {
+		return;
+	}
+
+	jvalue jArguments[1];
+
+	
+	
+		if ((titanium::V8Util::isNaN(value) && !value->IsUndefined()) || value->ToString()->Length() == 0) {
+			const char *error = "Invalid value, expected type Number.";
+			LOGE(TAG, error);
+		}
+	if (!value->IsNull()) {
+		Local<Number> arg_0 = value->ToNumber();
+		jArguments[0].i =
+			titanium::TypeConverter::jsNumberToJavaInt(env, arg_0);
+	} else {
+		jArguments[0].i = NULL;
+	}
+
+	jobject javaProxy = proxy->getJavaObject();
+	env->CallVoidMethodA(javaProxy, methodID, jArguments);
 
 	if (!JavaObject::useGlobalRefs) {
 		env->DeleteLocalRef(javaProxy);

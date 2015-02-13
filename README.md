@@ -96,12 +96,20 @@ for (i in sensorList){
 	}
 }
 
-Ti.Android.currentActivity.addEventListener('pause', function(e) {
-	Ti.API.info("removing sensorsCallback on pause");
+$.win.addEventListener('open', function(e) {
+	sensor.addEventListener('update', sensorsCallback);
+});
+
+$.win.addEventListener('close', function() {
+	sensor.removeEventListener('update', sensorsCallback);
+	$.destroy();
+});
+
+$.win.addEventListener('pause', function(e) {
 	sensor.removeEventListener('update', sensorsCallback);
 });
-Ti.Android.currentActivity.addEventListener('resume', function(e) {
-	Ti.API.info("adding sensorsCallback on resume");
+
+$.win.addEventListener('resume', function(e) {
 	sensor.addEventListener('update', sensorsCallback);
 });
 ```
@@ -176,6 +184,23 @@ Ti.Android.currentActivity.addEventListener('resume', function(e) {
 ###set the screen brightness value (between 0 AND 255) :
 ```javascript 
 	sensor.setScreenBrightness(255);
+```	
+		
+
+###get if phone have flash light :
+```javascript 
+	// return true or false. 
+	sensor.hasFlashLight();
+```	
+
+###set flash light on :
+```javascript 
+	sensor.setflashLightOn();
+```	
+
+###set flash light off :
+```javascript 
+	sensor.setflashLightOff();
 ```	
 		
 ### Return values for differents types : 

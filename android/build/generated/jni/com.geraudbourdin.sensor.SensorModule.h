@@ -35,20 +35,25 @@ private:
 	static v8::Handle<v8::Value> enableSensor(const v8::Arguments&);
 	static v8::Handle<v8::Value> listSensor(const v8::Arguments&);
 	static v8::Handle<v8::Value> getListSensor(const v8::Arguments&);
-	static v8::Handle<v8::Value> setScreenBrightness(const v8::Arguments&);
 	static v8::Handle<v8::Value> getSensorInfos(const v8::Arguments&);
-	static v8::Handle<v8::Value> getSensorInfost(const v8::Arguments&);
 	static v8::Handle<v8::Value> getBrightnessMode(const v8::Arguments&);
-	static v8::Handle<v8::Value> setBrightnessMode(const v8::Arguments&);
+	static v8::Handle<v8::Value> getSensorInfost(const v8::Arguments&);
 	static v8::Handle<v8::Value> setSensor(const v8::Arguments&);
+	static v8::Handle<v8::Value> setBrightnessMode(const v8::Arguments&);
+	static v8::Handle<v8::Value> flashLightOff(const v8::Arguments&);
+	static v8::Handle<v8::Value> hasFlashLight(const v8::Arguments&);
+	static v8::Handle<v8::Value> setflashLightOff(const v8::Arguments&);
+	static v8::Handle<v8::Value> setScreenBrightness(const v8::Arguments&);
+	static v8::Handle<v8::Value> flashLightOn(const v8::Arguments&);
+	static v8::Handle<v8::Value> setflashLightOn(const v8::Arguments&);
 
 	// Dynamic property accessors ----------------------------------------
 	static void setter_sensor(v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::AccessorInfo& info);
 	static void setter_sensorList(v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::AccessorInfo& info);
-	static void setter_screenBrightness(v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::AccessorInfo& info);
 	static void setter_enableSensor(v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::AccessorInfo& info);
-	static void setter_brightnessMode(v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::AccessorInfo& info);
+	static void setter_screenBrightness(v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::AccessorInfo& info);
 	static void setter_sensorInfos(v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::AccessorInfo& info);
+	static void setter_brightnessMode(v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::AccessorInfo& info);
 	static void setter_sensorInfost(v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::AccessorInfo& info);
 
 };

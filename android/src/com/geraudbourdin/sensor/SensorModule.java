@@ -33,6 +33,14 @@ import android.provider.Settings.SettingNotFoundException;
 import android.view.WindowManager;
 import android.view.Window;
 
+// Flash light
+import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.content.pm.PackageManager;
+import android.app.Activity;
+
 import java.util.List;
 
 import com.geraudbourdin.sensor.MeanFilter;
@@ -251,7 +259,9 @@ public class SensorModule extends KrollModule implements SensorEventListener
 		
 	}	
 	
-	
+	/*
+	 * Brightness stuffs
+	 */
 	@Kroll.method
 	protected int getBrightnessMode() {
 		try {
@@ -285,7 +295,83 @@ public class SensorModule extends KrollModule implements SensorEventListener
 			ContentResolver contentResolver = getActivity().getContentResolver();
 			Settings.System.putInt( contentResolver, android.provider.Settings.System.SCREEN_BRIGHTNESS, val);
 	}
+	/*
+	 * END brightness stuffs
+	 */
 	
+	
+	
+	/*
+	 * Flash light stuffs
+	 */
+	
+	private Camera camera;
+    private boolean isFlashOn;
+    private boolean hasFlash;
+    Parameters params;
+    MediaPlayer mp;
+    
+    @Kroll.method
+	protected boolean hasFlashLight() {
+    	Activity activity = TiApplication.getAppRootOrCurrentActivity();
+		boolean hasFlash = activity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+		return hasFlash;
+	}
+    
+    @Kroll.method
+    private void setflashLightOn() {
+        if (!isFlashOn) {
+        	if (camera == null ) {
+        		getCamera();
+        	}
+        	
+            if (camera == null || params == null) {
+                return;
+            }
+            Log.i(LCAT, "setflashLightOn");
+            params = camera.getParameters();
+            params.setFlashMode(Parameters.FLASH_MODE_TORCH);
+            camera.setParameters(params);
+            camera.startPreview();
+            isFlashOn = true;
+        }
+    }
+    // Get the camera
+    private void getCamera() {
+        if (camera == null) {
+            try {
+                camera = Camera.open();
+                params = camera.getParameters();
+            } catch (RuntimeException e) {
+                Log.e("Camera Error. Failed to Open. Error: ", e.getMessage());
+            }
+        }
+    }
+    
+    
+    @Kroll.method
+    private void setflashLightOff() {
+        if (isFlashOn) {
+            if (camera == null || params == null) {
+                return;
+            }
+            Log.i(LCAT, "setflashLightOff");
+            params = camera.getParameters();
+            params.setFlashMode(Parameters.FLASH_MODE_OFF);
+            camera.setParameters(params);
+            camera.stopPreview();
+            isFlashOn = false;
+        }
+    }
+    
+    
+    
+	/*
+	 * END Flash light stuffs
+	 */
+    
+    
+    
 	@Kroll.setProperty @Kroll.method
 	protected int[] getSensorList(int type) {
 		List<Sensor> sensors = sensorManager.getSensorList(type);
@@ -629,7 +715,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				stepDetectorRegistered = false;
 			}
 		}	
-		
+		setflashLightOff();
 		super.eventListenerRemoved(type, count, proxy);
 	}
 	
@@ -1000,5 +1086,30 @@ public class SensorModule extends KrollModule implements SensorEventListener
 		currentRotationMatrix[4] = 1.0f;
 		currentRotationMatrix[8] = 1.0f;
 
+	}
+	
+	
+	@Override
+	public void onStop(Activity activity)
+	{
+		super.onStop(activity);
+	}
+
+	@Override
+	public void onPause(Activity activity)
+	{
+		super.onPause(activity);
+	}
+
+	@Override
+	public void onResume(Activity activity)
+	{
+		super.onResume(activity);
+	}
+
+	@Override
+	public void onDestroy(Activity activity)
+	{
+		super.onDestroy(activity);
 	}
 }
