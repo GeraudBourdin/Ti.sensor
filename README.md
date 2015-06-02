@@ -72,7 +72,7 @@ Demo project for the all in one Titanium sensor module. (Android only).
 
 var sensor = require('com.geraudbourdin.sensor');
 
-Get list of sensors avaliable on your mobile :
+// Get list of sensors avaliable on your mobile :
 
 var sensorList = sensor.getSensorList(sensor.TYPE_ALL);
 
