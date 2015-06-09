@@ -3,6 +3,7 @@
 	<name>sensor</name>
 	<comment></comment>
 	<projects>
+		<project>sensor_demo</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
