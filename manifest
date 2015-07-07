@@ -1,8 +1,18 @@
-#appname: sensor
-#publisher: gtwin
-#url: 
-#image: appicon.png
-#appid: com.geraudbourdin.sensor
-#desc: undefined
-#type: module
-#guid: 3bad7a76-a5a3-4de8-9986-4817b3c9dcfb
+#
+# this is your module manifest and used by Titanium
+# during compilation, packaging, distribution, etc.
+#
+version: 1.0.1
+apiversion: 2
+architectures: armeabi armeabi-v7a x86
+description: Titanium module to gives access to Android sensors
+author: Géraud Bourdin
+license: MIT license
+copyright: Copyright (c) 2015 Géraud Bourdin
+
+# these should not be edited
+name: sensor
+moduleid: com.geraudbourdin.sensor
+guid: 655b02c2-6ae9-49ff-8e4f-060f2a55cdc8
+platform: android
+minsdk: 3.5.0.GA

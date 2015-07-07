@@ -2,13 +2,13 @@
 # this is your module manifest and used by Titanium
 # during compilation, packaging, distribution, etc.
 #
-version: 1.0.0
+version: 1.0.1
 apiversion: 2
 architectures: armeabi armeabi-v7a x86
-description: sensor
-author: Your Name
-license: Specify your license
-copyright: Copyright (c) 2015 by Your Company
+description: Titanium module to gives access to Android sensors
+author: Géraud Bourdin
+license: MIT license
+copyright: Copyright (c) 2015 Géraud Bourdin
 
 # these should not be edited
 name: sensor

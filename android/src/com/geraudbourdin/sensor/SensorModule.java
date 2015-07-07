@@ -26,6 +26,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.hardware.TriggerEvent;
+import android.hardware.TriggerEventListener;
 // Brightness.
 import android.content.ContentResolver;
 import android.provider.Settings;
@@ -51,6 +53,10 @@ public class SensorModule extends KrollModule implements SensorEventListener
 
 	private static final String LCAT = "SensorModule";
 	SensorManager sensorManager;
+	
+	// For significant motion Sensor only.
+	private Sensor mSensor;
+	private TriggerEventListener mTriggerEventListener;
 	
 	private static final String EVENT_UPDATE = "update";
 	
@@ -550,7 +556,19 @@ public class SensorModule extends KrollModule implements SensorEventListener
 		if (significantMotionEnabled && !significantMotionRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_SIGNIFICANT_MOTION:");
-				TiSensorHelper.registerListener(Sensor.TYPE_SIGNIFICANT_MOTION, this, SensorManager.SENSOR_DELAY_UI);
+				mSensor = sensorManager.getDefaultSensor(Sensor.TYPE_SIGNIFICANT_MOTION);
+				mTriggerEventListener = new TriggerEventListener() {
+				    @Override
+				    public void onTrigger(TriggerEvent event) {
+				    	KrollDict data = new KrollDict();
+						data.put("sType", Sensor.TYPE_SIGNIFICANT_MOTION);
+						significantMotionValues = event.values.clone();
+						data.put("motion", significantMotionValues[0]);
+				    	fireEvent(EVENT_UPDATE, data);
+				    	sensorManager.requestTriggerSensor(mTriggerEventListener, mSensor);
+				    }
+				};
+				sensorManager.requestTriggerSensor(mTriggerEventListener, mSensor);
 				significantMotionRegistered = true;
 			}
 		}
@@ -1099,12 +1117,19 @@ public class SensorModule extends KrollModule implements SensorEventListener
 	public void onPause(Activity activity)
 	{
 		super.onPause(activity);
+		if (significantMotionEnabled && significantMotionRegistered) {
+			sensorManager.cancelTriggerSensor(mTriggerEventListener, mSensor);
+		}
+		
 	}
 
 	@Override
 	public void onResume(Activity activity)
 	{
 		super.onResume(activity);
+		if (significantMotionEnabled && significantMotionRegistered) {
+			sensorManager.requestTriggerSensor(mTriggerEventListener, mSensor);
+		}
 	}
 
 	@Override
