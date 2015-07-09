@@ -1,6 +1,49 @@
-# ti_sensor_demo_app 
+# Ti.sensor
 
-Demo project for the all in one Titanium sensor module. (Android only).
+## Description
+(Android only).
+This module gives access to every Android sensors. 
+
+
+### Get it [![gitTio](http://gitt.io/badge.png)](http://gitt.io/component/com.geraudbourdin.sensor)
+Download the latest distribution ZIP-file and consult the [Titanium Documentation](http://docs.appcelerator.com/titanium/latest/#!/guide/Using_a_Module) on how install it, or simply use the [gitTio CLI](http://gitt.io/cli):
+
+`$ gittio install com.geraudbourdin.sensor`
+
+
+## Quick Start
+```javascript
+// import the sensor
+var sensor = require('com.geraudbourdin.sensor');
+// enabled the sensor
+sensor.setSensor(sensor.TYPE_AMBIENT_TEMPERATURE);
+// set the callback function
+var sensorsCallback = function(e) {
+    if(e.sType == sensor.TYPE_AMBIENT_TEMPERATURE){
+        // do stuff with your datas. (see demo app for complete usage and examples).
+        alert(e.celcius);
+        alert(e.fahrenheit);
+    }
+};
+// Set the events.
+$.win.addEventListener('open', function(e) {
+    sensor.addEventListener('update', sensorsCallback);
+});
+
+$.win.addEventListener('close', function() {
+    sensor.removeEventListener('update', sensorsCallback);
+    $.destroy();
+});
+
+$.win.addEventListener('pause', function(e) {
+    sensor.removeEventListener('update', sensorsCallback);
+});
+
+$.win.addEventListener('resume', function(e) {
+    sensor.addEventListener('update', sensorsCallback);
+});
+
+```
 
 
 ## List of avaliable sensors : 
@@ -366,3 +409,18 @@ $.win.addEventListener('resume', function(e) {
 		e.orientation : Azimuth, angle between the magnetic north direction and the y-axis, around the z-axis (0 to 359). 0=North, 90=East, 180=South, 270=West.
 		e.pitch : Pitch, rotation around x-axis (-180 to 180), with positive values when the z-axis moves toward the y-axis.
 		e.roll : Roll, rotation around the x-axis (-90 to 90) increasing as the device moves clockwise.
+		
+		
+		
+## License
+The MIT License (MIT)
+
+Copyright © 2015 Géraud Bourdin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+		
+		
