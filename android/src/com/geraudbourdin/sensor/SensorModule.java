@@ -1047,8 +1047,8 @@ public class SensorModule extends KrollModule implements SensorEventListener
 			case Sensor.TYPE_ORIENTATION:
 				orientationValues = event.values.clone();
 				data.put("orientation", orientationValues[0]);
-				data.put("pitch", orientationValues[0]);
-				data.put("roll", orientationValues[0]);
+				data.put("pitch", orientationValues[1]);
+				data.put("roll", orientationValues[2]);
 				break;
 			case Sensor.TYPE_STEP_DETECTOR:
 				stepDetectorValues = event.values.clone();
