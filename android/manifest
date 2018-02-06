@@ -2,9 +2,9 @@
 # this is your module manifest and used by Titanium
 # during compilation, packaging, distribution, etc.
 #
-version: 1.0.1
-apiversion: 2
-architectures: armeabi armeabi-v7a x86
+version: 3.0.0
+apiversion: 4
+architectures: arm64-v8a armeabi-v7a x86
 description: Titanium module to gives access to Android sensors
 author: Géraud Bourdin
 license: MIT license
@@ -15,4 +15,4 @@ name: sensor
 moduleid: com.geraudbourdin.sensor
 guid: 655b02c2-6ae9-49ff-8e4f-060f2a55cdc8
 platform: android
-minsdk: 3.5.0.GA
+minsdk: 7.0.1

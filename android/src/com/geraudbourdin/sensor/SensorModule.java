@@ -15,7 +15,6 @@ import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
-import org.appcelerator.titanium.TiContext;
 import org.appcelerator.titanium.util.TiSensorHelper;
 import org.appcelerator.titanium.util.TiUIHelper;
 import org.appcelerator.titanium.TiApplication;
@@ -53,13 +52,13 @@ public class SensorModule extends KrollModule implements SensorEventListener
 
 	private static final String LCAT = "SensorModule";
 	SensorManager sensorManager;
-	
+
 	// For significant motion Sensor only.
 	private Sensor mSensor;
 	private TriggerEventListener mTriggerEventListener;
-	
+
 	private static final String EVENT_UPDATE = "update";
-	
+
 	@Kroll.constant
 	public static final int TYPE_ACCELEROMETER = Sensor.TYPE_ACCELEROMETER;
 	@Kroll.constant
@@ -105,166 +104,161 @@ public class SensorModule extends KrollModule implements SensorEventListener
 	@Kroll.constant
 	public static final int SCREEN_BRIGHTNESS_MODE_AUTOMATIC = Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
 
-	
+
 	private boolean accelerometerRegistered = false;
 	private boolean accelerometerEnabled = false;
 
 	private boolean magneticFieldRegistered = false;
 	private boolean magneticFieldEnabled = false;
-	
+
 	private boolean ambiantTemperatureRegistered = false;
 	private boolean ambiantTemperatureEnabled = false;
-	
+
 	private boolean gameRotationVectorRegistered = false;
 	private boolean gameRotationVectorEnabled = false;
-	
+
 	private boolean geomagneticRotationVectorRegistered = false;
 	private boolean geomagneticRotationVectorEnabled = false;
-	
+
 	private boolean gravityRegistered = false;
 	private boolean gravityEnabled = false;
-	
+
 	private boolean gyroscopeRegistered = false;
 	private boolean gyroscopeEnabled = false;
-	
+
 	private boolean gyroscopeUncalibratedRegistered = false;
 	private boolean gyroscopeUncalibratedEnabled = false;
-	
+
 	//private boolean heartRateRegistered = false;
 	//private boolean heartRateEnabled = false;
-	
+
 	private boolean lightRegistered = false;
 	private boolean lightEnabled = false;
-	
+
 	private boolean linearAccelerationRegistered = false;
 	private boolean linearAccelerationEnabled = false;
-	
+
 	private boolean magneticFieldUncalibratedRegistered = false;
 	private boolean magneticFieldUncalibratedEnabled = false;
-	
+
 	private boolean orientationRegistered = false;
 	private boolean orientationEnabled = false;
-	
+
 	private boolean pressureRegistered = false;
 	private boolean pressureEnabled = false;
-	
+
 	private boolean proximityRegistered = false;
 	private boolean proximityEnabled = false;
-	
+
 	private boolean relativeHumidityRegistered = false;
 	private boolean relativeHumidityEnabled = false;
-	
+
 	private boolean rotationVectorRegistered = false;
 	private boolean rotationVectorEnabled = false;
-	
+
 	private boolean significantMotionRegistered = false;
 	private boolean significantMotionEnabled = false;
-	
+
 	private boolean stepCounterRegistered = false;
 	private boolean stepCounterEnabled = false;
-	
+
 	private boolean stepDetectorRegistered = false;
 	private boolean stepDetectorEnabled = false;
-	
+
 	public SensorModule(){
 		super();
-	}
-	
-	public SensorModule(TiContext tiContext)
-	{
-		this();
-		
-		if (TiApplication.getInstance().getSystemService(Context.SENSOR_SERVICE) != null) {
+
+        if (TiApplication.getInstance().getSystemService(Context.SENSOR_SERVICE) != null) {
 			sensorManager = (SensorManager) TiApplication.getInstance().getSystemService(Context.SENSOR_SERVICE);
 		}
 	}
 
-	
+
 	@Kroll.setProperty @Kroll.method
 	public void setSensor(int type) {
 		if(type == Sensor.TYPE_ACCELEROMETER){
 			accelerometerEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_MAGNETIC_FIELD){
 			magneticFieldEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_AMBIENT_TEMPERATURE){
 			ambiantTemperatureEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_GAME_ROTATION_VECTOR){
 			gameRotationVectorEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR){
 			geomagneticRotationVectorEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_GRAVITY){
 			gravityEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_GYROSCOPE){
 			gyroscopeEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_GYROSCOPE_UNCALIBRATED){
 			gyroscopeUncalibratedEnabled = true;
 		}
-		
+
 		/*if(type == Sensor.TYPE_HEART_RATE){
 			heartRateEnabled = true;
 			Log.i(LCAT, "In Module - the new value for TYPE_HEART_RATE:" + heartRateEnabled);
 		}*/
-		
+
 		if(type == Sensor.TYPE_LIGHT){
 			lightEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_LINEAR_ACCELERATION){
 			linearAccelerationEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED){
 			magneticFieldUncalibratedEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_ORIENTATION){
 			orientationEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_PRESSURE){
 			pressureEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_PROXIMITY){
 			proximityEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_RELATIVE_HUMIDITY){
 			relativeHumidityEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_ROTATION_VECTOR){
 			rotationVectorEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_SIGNIFICANT_MOTION){
 			significantMotionEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_STEP_COUNTER){
 			stepCounterEnabled = true;
 		}
-		
+
 		if(type == Sensor.TYPE_STEP_DETECTOR){
 			stepDetectorEnabled = true;
 		}
-		
-	}	
-	
+
+	}
+
 	/*
 	 * Brightness stuffs
 	 */
@@ -278,13 +272,13 @@ public class SensorModule extends KrollModule implements SensorEventListener
 			return -1;
 		}
 	}
-	
+
 	@Kroll.setProperty @Kroll.method
 	protected void setBrightnessMode(int type) {
 		ContentResolver contentResolver = getActivity().getContentResolver();
 		Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, type);
 	}
-	
+
 	@Kroll.method
 	protected int getScreenBrightness() {
 		try {
@@ -295,7 +289,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 			return -1;
 		}
 	}
-	
+
 	@Kroll.setProperty @Kroll.method
 	protected void setScreenBrightness(int val) {
 			ContentResolver contentResolver = getActivity().getContentResolver();
@@ -304,33 +298,33 @@ public class SensorModule extends KrollModule implements SensorEventListener
 	/*
 	 * END brightness stuffs
 	 */
-	
-	
-	
+
+
+
 	/*
 	 * Flash light stuffs
 	 */
-	
+
 	private Camera camera;
     private boolean isFlashOn;
     private boolean hasFlash;
     Parameters params;
     MediaPlayer mp;
-    
+
     @Kroll.method
 	protected boolean hasFlashLight() {
     	Activity activity = TiApplication.getAppRootOrCurrentActivity();
 		boolean hasFlash = activity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
 		return hasFlash;
 	}
-    
+
     @Kroll.method
     private void setflashLightOn() {
         if (!isFlashOn) {
         	if (camera == null ) {
         		getCamera();
         	}
-        	
+
             if (camera == null || params == null) {
                 return;
             }
@@ -353,8 +347,8 @@ public class SensorModule extends KrollModule implements SensorEventListener
             }
         }
     }
-    
-    
+
+
     @Kroll.method
     private void setflashLightOff() {
         if (isFlashOn) {
@@ -369,15 +363,15 @@ public class SensorModule extends KrollModule implements SensorEventListener
             isFlashOn = false;
         }
     }
-    
-    
-    
+
+
+
 	/*
 	 * END Flash light stuffs
 	 */
-    
-    
-    
+
+
+
 	@Kroll.setProperty @Kroll.method
 	protected int[] getSensorList(int type) {
 		List<Sensor> sensors = sensorManager.getSensorList(type);
@@ -388,8 +382,8 @@ public class SensorModule extends KrollModule implements SensorEventListener
 		}
 	    return list;
 	}
-	
-	
+
+
 	@Kroll.setProperty @Kroll.method
 	protected KrollDict getSensorInfos(int type) {
 		Sensor sensor = sensorManager.getDefaultSensor(type);
@@ -406,8 +400,8 @@ public class SensorModule extends KrollModule implements SensorEventListener
 		}
 		 return data;
 	}
-	
-	
+
+
 	@Override
 	public void eventListenerAdded(String type, int count, final KrollProxy proxy)
 	{
@@ -421,7 +415,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				accelerometerRegistered = true;
 			}
 		}
-		
+
 		if (magneticFieldEnabled && !magneticFieldRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for MAGNETIC_FIELD:");
@@ -431,7 +425,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				magneticFieldRegistered = true;
 			}
 		}
-		
+
 		if (ambiantTemperatureEnabled && !ambiantTemperatureRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_AMBIENT_TEMPERATURE:");
@@ -439,7 +433,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				ambiantTemperatureRegistered = true;
 			}
 		}
-		
+
 		if (gameRotationVectorEnabled && !gameRotationVectorRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_GAME_ROTATION_VECTOR:");
@@ -447,7 +441,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				gameRotationVectorRegistered = true;
 			}
 		}
-		
+
 		if (geomagneticRotationVectorEnabled && !geomagneticRotationVectorRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_GEOMAGNETIC_ROTATION_VECTOR:");
@@ -455,7 +449,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				geomagneticRotationVectorRegistered = true;
 			}
 		}
-		
+
 		if (gravityEnabled && !gravityRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_GRAVITY:");
@@ -463,7 +457,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				gravityRegistered = true;
 			}
 		}
-		
+
 		if (gyroscopeEnabled && !gyroscopeRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_GYROSCOPE:");
@@ -472,7 +466,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				gyroscopeRegistered = true;
 			}
 		}
-		
+
 		if (gyroscopeUncalibratedEnabled && !gyroscopeUncalibratedRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_GYROSCOPE_UNCALIBRATED:");
@@ -480,7 +474,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				gyroscopeUncalibratedRegistered = true;
 			}
 		}
-		
+
 		/*if (heartRateEnabled && !heartRateRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_HEART_RATE:");
@@ -488,7 +482,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				heartRateRegistered = true;
 			}
 		}*/
-		
+
 		if (lightEnabled && !lightRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_LIGHT:");
@@ -496,7 +490,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				lightRegistered = true;
 			}
 		}
-		
+
 		if (linearAccelerationEnabled && !linearAccelerationRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_LINEAR_ACCELERATION:");
@@ -504,7 +498,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				linearAccelerationRegistered = true;
 			}
 		}
-		
+
 		if (magneticFieldUncalibratedEnabled && !magneticFieldUncalibratedRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_MAGNETIC_FIELD_UNCALIBRATED:");
@@ -512,7 +506,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				magneticFieldUncalibratedRegistered = true;
 			}
 		}
-		
+
 		if (orientationEnabled && !orientationRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_ORIENTATION:");
@@ -520,7 +514,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				orientationRegistered = true;
 			}
 		}
-		
+
 		if (pressureEnabled && !pressureRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_PRESSURE:");
@@ -528,7 +522,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				pressureRegistered = true;
 			}
 		}
-		
+
 		if (proximityEnabled && !proximityRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_PROXIMITY:");
@@ -536,7 +530,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				proximityRegistered = true;
 			}
 		}
-		
+
 		if (relativeHumidityEnabled && !relativeHumidityRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_RELATIVE_HUMIDITY:");
@@ -544,7 +538,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				relativeHumidityRegistered = true;
 			}
 		}
-		
+
 		if (rotationVectorEnabled && !rotationVectorRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_ROTATION_VECTOR:");
@@ -552,7 +546,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				rotationVectorRegistered = true;
 			}
 		}
-		
+
 		if (significantMotionEnabled && !significantMotionRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_SIGNIFICANT_MOTION:");
@@ -572,7 +566,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				significantMotionRegistered = true;
 			}
 		}
-		
+
 		if (stepCounterEnabled && !stepCounterRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_STEP_COUNTER:");
@@ -580,7 +574,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				stepCounterRegistered = true;
 			}
 		}
-		
+
 		if (stepDetectorEnabled && !stepDetectorRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				Log.i(LCAT, "registerListener for TYPE_STEP_DETECTOR:");
@@ -606,150 +600,150 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				magneticFieldRegistered = false;
 			}
 		}
-		
-		
+
+
 		if (ambiantTemperatureRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_AMBIENT_TEMPERATURE, this);
 				ambiantTemperatureRegistered = false;
 			}
 		}
-		
+
 		if (gameRotationVectorRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_GAME_ROTATION_VECTOR, this);
 				gameRotationVectorRegistered = false;
 			}
 		}
-		
+
 		if (geomagneticRotationVectorRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR, this);
 				geomagneticRotationVectorRegistered = false;
 			}
 		}
-		
+
 		if (gravityRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_GRAVITY, this);
 				gravityRegistered = false;
 			}
 		}
-		
+
 		if (gyroscopeRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_GYROSCOPE, this);
 				gyroscopeRegistered = false;
 			}
 		}
-		
+
 		if (gyroscopeUncalibratedRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_GYROSCOPE_UNCALIBRATED, this);
 				gyroscopeUncalibratedRegistered = false;
 			}
 		}
-		
+
 		/*if (heartRateRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_HEART_RATE, this);
 				heartRateRegistered = false;
 			}
 		}*/
-		
+
 		if (lightRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_LIGHT, this);
 				lightRegistered = false;
 			}
 		}
-		
+
 		if (linearAccelerationRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_LINEAR_ACCELERATION, this);
 				linearAccelerationRegistered = false;
 			}
 		}
-		
+
 		if (magneticFieldUncalibratedRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED, this);
 				magneticFieldUncalibratedRegistered = false;
 			}
 		}
-		
+
 		if (orientationRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_ORIENTATION, this);
 				orientationRegistered = false;
 			}
 		}
-		
+
 		if (pressureRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_PRESSURE, this);
 				pressureRegistered = false;
 			}
 		}
-		
+
 		if (proximityRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_PROXIMITY, this);
 				proximityRegistered = false;
 			}
 		}
-		
+
 		if (relativeHumidityRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_RELATIVE_HUMIDITY, this);
 				relativeHumidityRegistered = false;
 			}
 		}
-		
+
 		if (rotationVectorRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_ROTATION_VECTOR, this);
 				rotationVectorRegistered = false;
 			}
 		}
-		
+
 		if (significantMotionRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_SIGNIFICANT_MOTION, this);
 				significantMotionRegistered = false;
 			}
 		}
-		
+
 		if (stepCounterRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_STEP_COUNTER, this);
 				stepCounterRegistered = false;
 			}
 		}
-		
+
 		if (stepDetectorRegistered) {
 			if (EVENT_UPDATE.equals(type)) {
 				TiSensorHelper.unregisterListener(Sensor.TYPE_STEP_DETECTOR, this);
 				stepDetectorRegistered = false;
 			}
-		}	
+		}
 		setflashLightOff();
 		super.eventListenerRemoved(type, count, proxy);
 	}
-	
-	
-	
+
+
+
 	public void onAccuracyChanged(Sensor sensor, int accuracy)
 	{
 	}
-	
-	
+
+
 	// Used by TYPE_ACCELEROMETER
 	float[] gravity = new float[3];
 	private long lastSensorAccelerometerEventTimestamp = 0;
 	private float[] accellerometerValues = null;
 	private MeanFilter accelerationFilter;
-	
+
 	// Used by TYPE_MAGNETIC_FIELD
 	private float[] magneticFieldValues = null;
 	private float[] R = new float[16];
@@ -779,7 +773,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 	private boolean hasInitialOrientation = false;
 	private float[] initialRotationMatrix;
 	private boolean stateInitializedCalibrated = false;
-	
+
 	private MeanFilter magneticFilter;
 	// Used by TYPE_GYROSCOPE_UNCALIBRATED
 	private float[] gyroscopeUncalibratedValues = null;
@@ -809,10 +803,10 @@ public class SensorModule extends KrollModule implements SensorEventListener
 	// Used by TYPE_STEP_DETECTOR
 	private float[] stepDetectorValues = null;
 	private int stepDetectorCounter;
-	
-	
+
+
 	public void onSensorChanged(SensorEvent event) {
-		
+
 		KrollDict data = new KrollDict();
 		data.put("sType", event.sensor.getType());
 		switch (event.sensor.getType()) {
@@ -821,7 +815,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 					accellerometerValues = event.values.clone();
 						accellerometerValues = accelerationFilter.filterFloat(accellerometerValues); // Use a mean filter to smooth the sensor inputs
 						accelerationSampleCount++; // Count the number of samples received.
-	
+
 						// Only determine the initial orientation after the acceleration sensor
 						// and magnetic sensor have had enough time to be smoothed by the mean
 						// filters. Also, only do this if the orientation hasn't already been
@@ -832,12 +826,12 @@ public class SensorModule extends KrollModule implements SensorEventListener
 							calculateOrientation();
 						}
 					// End gyroscope stuffs
-					
+
 					lastSensorAccelerometerEventTimestamp = event.timestamp;
 
 				    float[] linear_acceleration = new float[3];
 				    final float alpha = (float) 0.8;
-				    
+
 			        gravity[0] = alpha * gravity[0] + (1 - alpha) * accellerometerValues[0];
 			        gravity[1] = alpha * gravity[1] + (1 - alpha) * accellerometerValues[1];
 			        gravity[2] = alpha * gravity[2] + (1 - alpha) * accellerometerValues[2];
@@ -845,11 +839,11 @@ public class SensorModule extends KrollModule implements SensorEventListener
 			        linear_acceleration[0] = accellerometerValues[0] - gravity[0];
 			        linear_acceleration[1] = accellerometerValues[1] - gravity[1];
 			        linear_acceleration[2] = accellerometerValues[2] - gravity[2];
-					
+
 					float x = accellerometerValues[0];
 					float y = accellerometerValues[1];
 					float z = accellerometerValues[2];
-					
+
 					data.put("x", x);
 					data.put("y", y);
 					data.put("z", z);
@@ -864,15 +858,15 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				magneticFieldValues = magneticFilter.filterFloat(magneticFieldValues);// Use a mean filter to smooth the sensor inputs
 				magneticSampleCount++;// Count the number of samples received.
 				// End gyroscope stuffs
-				
+
 				double magnetometer = Math.sqrt(Math.pow(magneticFieldValues[0], 2) + Math.pow( magneticFieldValues[1], 2) + Math.pow(magneticFieldValues[2], 2));
 				data.put("magnetometer", magnetometer);
 				data.put("x", magneticFieldValues[0]);
 				data.put("y", magneticFieldValues[1]);
 				data.put("z", magneticFieldValues[2]);
-				
+
 				if(accellerometerValues!=null && magneticFieldValues!=null){
-					
+
 					boolean success = SensorManager.getRotationMatrix(R, I, accellerometerValues, magneticFieldValues);
 					SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_X, SensorManager.AXIS_Z, outR);
 					if (success) {
@@ -925,7 +919,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				gyroscopeValues = event.values.clone();
 				// from http://developer.android.com/reference/android/hardware/SensorEvent.html#values
 				// http://www.kircherelectronics.com/blog/index.php/11-android/sensors/16-android-gyroscope-fusion
-				
+
 				// This timestep's delta rotation to be multiplied by the current rotation
 		        // after computing it from the gyro sample data.
 				if (!hasInitialOrientation){
@@ -936,7 +930,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 		            currentRotationMatrix = matrixMultiplication(currentRotationMatrix, initialRotationMatrix);
 		            stateInitializedCalibrated = true;
 		        }
-		        
+
 		        if (lastSensorGyroscopeEventTimestamp != 0 && stateInitializedCalibrated) {
 		        	final float dT = (event.timestamp - lastSensorGyroscopeEventTimestamp) * NS2S;
 		            // Axis of the rotation sample, not normalized yet.
@@ -965,13 +959,13 @@ public class SensorModule extends KrollModule implements SensorEventListener
 					deltaRotationVector[1] = sinThetaOverTwo * axisY;
 					deltaRotationVector[2] = sinThetaOverTwo * axisZ;
 					deltaRotationVector[3] = cosThetaOverTwo;
-					
+
 					SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, deltaRotationVector);
 					// User code should concatenate the delta rotation we computed with the current rotation
 					// in order to get the updated rotation.
 					currentRotationMatrix = matrixMultiplication( currentRotationMatrix,  deltaRotationMatrix );
 					SensorManager.getOrientation( currentRotationMatrix, gyroscopeOrientation );
-				
+
 					data.put("x", gyroscopeValues[0]);
 					data.put("y", gyroscopeValues[1]);
 					data.put("z", gyroscopeValues[2]);
@@ -997,11 +991,11 @@ public class SensorModule extends KrollModule implements SensorEventListener
 				break;
 			case Sensor.TYPE_LINEAR_ACCELERATION:
 				linearAccelerationValues = event.values.clone();
-				
+
 				float x = linearAccelerationValues[0];
 				float y = linearAccelerationValues[1];
 				float z = linearAccelerationValues[2];
-				
+
 				data.put("x", x);
 				data.put("y", y);
 				data.put("z", z);
@@ -1060,30 +1054,30 @@ public class SensorModule extends KrollModule implements SensorEventListener
 		}
 		fireEvent(EVENT_UPDATE, data);
 	}
-	
+
 	@Kroll.onAppCreate
 	public static void onAppCreate(TiApplication app) {
 		Log.d(LCAT, "inside onAppCreate");
 	}
-	
-	
-	
+
+
+
 	private float[] matrixMultiplication(float[] a, float[] b)
     {
         float[] result = new float[9];
- 
+
         result[0] = a[0] * b[0] + a[1] * b[3] + a[2] * b[6];
         result[1] = a[0] * b[1] + a[1] * b[4] + a[2] * b[7];
         result[2] = a[0] * b[2] + a[1] * b[5] + a[2] * b[8];
- 
+
         result[3] = a[3] * b[0] + a[4] * b[3] + a[5] * b[6];
         result[4] = a[3] * b[1] + a[4] * b[4] + a[5] * b[7];
         result[5] = a[3] * b[2] + a[4] * b[5] + a[5] * b[8];
- 
+
         result[6] = a[6] * b[0] + a[7] * b[3] + a[8] * b[6];
         result[7] = a[6] * b[1] + a[7] * b[4] + a[8] * b[7];
         result[8] = a[6] * b[2] + a[7] * b[5] + a[8] * b[8];
- 
+
         return result;
     }
 	private void calculateOrientation()
@@ -1095,7 +1089,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 		}
 
 	}
-	
+
 	private void initGyroMaths(){
 		initialRotationMatrix = new float[9];
 		gyroscopeOrientation = new float[3];
@@ -1105,8 +1099,8 @@ public class SensorModule extends KrollModule implements SensorEventListener
 		currentRotationMatrix[8] = 1.0f;
 
 	}
-	
-	
+
+
 	@Override
 	public void onStop(Activity activity)
 	{
@@ -1120,7 +1114,7 @@ public class SensorModule extends KrollModule implements SensorEventListener
 		if (significantMotionEnabled && significantMotionRegistered) {
 			sensorManager.cancelTriggerSensor(mTriggerEventListener, mSensor);
 		}
-		
+
 	}
 
 	@Override
